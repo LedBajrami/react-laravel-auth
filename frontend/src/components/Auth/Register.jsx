@@ -1,8 +1,14 @@
 import { Button, Form, Input } from "antd"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import { useDispatch, useSelector } from 'react-redux'
+import { registerUser } from "../../services/redux/slices/auth/authThunks"
 import { useState } from "react"
 
 function Register() {
+  const dispatch = useDispatch()
+  const status = useSelector((state) => state.auth.status)
+  const errorMessage = useSelector((state) => state.auth.error)
+  const navigate = useNavigate()
   const [message, setMessage] = useState('')
 
   const handleSubmit = async (values) => {
@@ -12,7 +18,17 @@ function Register() {
       setMessage('Passwords do not match')
       return
     }
+    
+    try {
+      await dispatch(registerUser(values))
+      
+        navigate('/')
+      
+    } catch (error) {
+      setMessage(error)
+    }
   }
+
 
   return (
       <Form name="register_form" layout="vertical" onFinish={handleSubmit}>
@@ -44,11 +60,12 @@ function Register() {
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit">
-           Register
+          <Button type="primary" htmlType="submit" block disabled={status === 'loading'}>
+            {status === 'loading'? 'Registering your account': 'Register'}
           </Button>
         </Form.Item>
 
+          <p style={{textAlign: 'center', color: "red"}}>{errorMessage}</p>
           <p style={{textAlign: 'center', color: "red"}}>{message}</p>
         <div style={{textAlign: "center", paddingTop: "10px"}}>
           <p>Already have an account? <Link to='/login'>Login</Link></p>
