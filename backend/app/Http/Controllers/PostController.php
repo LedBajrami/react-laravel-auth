@@ -17,4 +17,9 @@ class PostController extends Controller
 
         return response()->json(['message' => 'Post created successfully', 'post' => $post], 201);
     }
+
+    public function posts() {
+        $posts = Post::where('user_id', Auth::id())->latest()->get();
+        return response()->json(['posts' => $posts], 200);
+    }
 }
