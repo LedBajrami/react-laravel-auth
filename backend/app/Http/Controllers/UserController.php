@@ -32,4 +32,23 @@ class Useontroller extends Controller
             return response()->json(['message' => 'User is not authorized'], 401);
         }
     }
+
+
+    public function user() {
+        $user = Auth::user(); 
+    
+        if ($user) {
+           
+            $userData = [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'profile_photo' => $user->profile_photo
+            ];
+    
+            return response()->json(['message' => 'User data retrieved successfully', 'user' => $userData], 200);
+        } else {
+            return response()->json(['message' => 'User not authenticated'], 401);
+        }
+    }
 }
