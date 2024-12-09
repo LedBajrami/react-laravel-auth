@@ -73,4 +73,16 @@ class Useontroller extends Controller
             return response()->json(['error' => 'User not authenticated'], 401);
         }
     }
+
+    public function logout() {
+        $userToken = Auth::user()->token();
+
+        if ($userToken) {
+            $userToken->revoke();
+            return response()->json(['message' => 'User logged out succesfully'], 200);
+        } else {
+            return response()->json(['message' => 'Failed to log out'], 500);
+        }
+
+    }
 }
