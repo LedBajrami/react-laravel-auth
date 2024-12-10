@@ -22,4 +22,15 @@ class PostController extends Controller
         $posts = Post::where('user_id', Auth::id())->latest()->get();
         return response()->json(['posts' => $posts], 200);
     }
+
+    public function delete($id) {
+        $post = Post::find($id);
+
+        if ($post && $post->user_id == Auth::id()) {
+            $post->delete();
+            return response()->json(['message' => 'Post deleted successfully'], 200);
+        } else {
+            return response()->json(['message' => 'Post not found or unauthorized'], 404);
+        }
+    }
 }
