@@ -33,4 +33,15 @@ class PostController extends Controller
             return response()->json(['message' => 'Post not found or unauthorized'], 404);
         }
     }
+
+
+    public function show($id) {
+        $post = Post::with('comments.user')->find($id);
+
+        if (!$post) {
+            return response()->json(['message' => 'Post not found'], 404);
+        }
+
+        return response()->json(['post' => $post], 200);
+    }
 }
