@@ -20,5 +20,9 @@ Route::middleware(['auth:api'])->group(function() {
     Route::post('/post', [PostController::class, 'create']);
     Route::get('/posts', [PostController::class, 'posts']);
     Route::delete('/posts/{id}', [PostController::class, 'delete']); 
+
+    Route::get('/posts/{id}', [PostController::class, 'show']);
+    Route::post('/posts/{postId}/comments', [CommentController::class, 'store']);
+    Route::delete('/comments/{id}', [CommentController::class, 'delete']);
     
 });    
