@@ -16,5 +16,9 @@ Route::middleware(['auth:api'])->group(function() {
     Route::get('/user', [UserController::class, 'user']);
     Route::post('/user/upload', [UserController::class, 'uploadPhoto']);
     Route::get('/logout', [UserController::class, 'logout']);
+
+    Route::post('/post', [PostController::class, 'create']);
+    Route::get('/posts', [PostController::class, 'posts']);
+    Route::delete('/posts/{id}', [PostController::class, 'delete']); 
     
 });    
