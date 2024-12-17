@@ -1,0 +1,25 @@
+{
+    "login": {
+      "title": "Login",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Login",
+      "not_registred": "Don't have an account?"
+    },
+    "register": {
+      "title": "Register",
+      "name": "Name",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Register",
+      "confirm_password": "Confirm Password",
+      "already_registred": "Already have an account?"
+    },
+    "user": {
+        "name": "Name",
+        "posts": "Posts",
+        "comments": "Comments",
+        "delete": "Delete"
+    }
+  }
+  

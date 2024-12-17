@@ -1,0 +1,25 @@
+{
+    "login": {
+      "title": "Login",
+      "email": "Email",
+      "password": "Fjalekalimi",
+      "submit": "Login",
+      "not_registred": "Nuk jeni te regjistruar?"
+    },
+    "register": {
+      "title": "Regjistrohu",
+      "name": "Emri",
+      "email": "Email",
+      "password": "Fjalekalimi",
+      "submit": "Regjistrohu",
+      "confirm_password": "Konfirmo Fjalekalimin",
+       "already_registred": "Jeni regjistruar me pare?"
+    },
+    "user": {
+        "name": "Emri",
+        "posts": "Postimet",
+        "comments": "Komentet",
+        "delete": "Fshi"
+    }
+  }
+  
