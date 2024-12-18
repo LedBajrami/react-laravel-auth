@@ -1,9 +1,11 @@
 import { Button, Upload } from "antd"
 import { useDispatch } from "react-redux"
 import { uploadProfilePhoto } from "../../services/redux/slices/user/userThunks"
+import { useTranslation } from "react-i18next"
 
 function UserPhotoUpload() {
   const dispatch = useDispatch()
+  const { t } = useTranslation()
 
   const handleUpload = (file) => {
     try {
@@ -15,7 +17,7 @@ function UserPhotoUpload() {
 
   return (
     <Upload beforeUpload={handleUpload} name="profile_photo" showUploadList={false}>
-      <Button>Upload Profile Photo</Button>
+      <Button>{t('user.uploadPhoto')}</Button>
     </Upload>
   )
 }

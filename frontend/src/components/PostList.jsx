@@ -1,6 +1,7 @@
 import { Button } from "antd"
 import { Link } from "react-router-dom"
 
+
 export const PostList = ({posts, handleDelete}) => {
     return (
         <ul>
@@ -15,5 +16,6 @@ export const PostList = ({posts, handleDelete}) => {
             <p>No posts available.</p>
           )}
         </ul>
+        
     )
 }

@@ -3,9 +3,14 @@ import { useDispatch, useSelector } from "react-redux"
 import { Link, useNavigate } from "react-router-dom"
 import { loginUser } from "../../services/redux/slices/auth/authThunks"
 import { fetchUser } from "../../services/redux/slices/user/userThunks"
+import { CostumInput } from "../../components/CostumInput"
+import { CostumButton } from "../../components/CostumButton"
+import { useTranslation } from "react-i18next"
+import '../../assets/styles/styles.css'
 
 
 function Login() {
+  const { t } = useTranslation()
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const status = useSelector((state) => state.auth.status)
@@ -25,26 +30,20 @@ function Login() {
   return (
     <Form name="login_form" layout="vertical" onFinish={handleSubmit}>
       
-      <Form.Item label="Email" name='email' rules={[{required: true, message: "Please enter your email address"}]}>
-        <Input type="email" />
-      </Form.Item>
+    <CostumInput label={t('login.email')} name="email" type="email" rules={[{required: true, message: "Please enter your email address"}]}  />
 
-      <Form.Item label="Password" name='password' rules={[{required: true, message: "Please enter your password"}]}>
-        <Input.Password />
-      </Form.Item>
+    <CostumInput label={t('login.password')} name='password' type="password" rules={[{required: true, message: "Please enter your password"}]} />
 
-      <Form.Item>
-        <Button type="primary" htmlType="submit" block disabled={status === 'loading'}>
-          {status === 'loading'? 'Redirecting to your account': 'Login'}
-        </Button>
-      </Form.Item>
-  
-      <p style={{textAlign: 'center', color: "red"}}>{errorMessage}</p>
+    <CostumButton htmlType="submit" loading={status === 'loading'}>
+        Login
+    </CostumButton>
 
-      <div style={{textAlign: "center", paddingTop: "10px"}}>
-          <p>Don't have an account? <Link to='/register'>Register</Link></p>
-        </div>
-    </Form>
+    <p className="error-message">{errorMessage}</p>
+
+    <div style={{textAlign: "center", paddingTop: "10px"}}>
+        <p>{t('login.not_registred')} <Link to='/register'>{t('register.title')}</Link></p>
+      </div>
+  </Form>
   )
 }
 

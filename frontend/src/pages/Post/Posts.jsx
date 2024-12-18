@@ -3,10 +3,15 @@ import { useDispatch, useSelector } from "react-redux"
 import { deletePost, getPosts, uploadPost } from "../../services/redux/slices/post/postThunks"
 import { useEffect } from "react"
 import { Link } from "react-router-dom"
+import { CostumButton } from '../../components/CostumButton';
+import { CostumInput } from '../../components/CostumInput';
+import { useTranslation } from 'react-i18next';
 
 export const Posts = () => {
   const dispatch = useDispatch()
   const { posts, status } = useSelector((state) => state.post)
+  const { t } = useTranslation()
+
 
   const [form] = Form.useForm();
 
@@ -34,38 +39,26 @@ export const Posts = () => {
   }, [dispatch])
 
   return (
-    <div>
-      <h2>Posts</h2>
+    <Spin spinning={status === 'loading'}>
+      <h2>{t("user.posts")}</h2>
+
+      {error && <Alert message={error} type="error" showIcon />}
 
       <div>
         <Form form={form} name="post_form" onFinish={handleSubmit}>
+        
+          <CostumInput
+            name="content"
+            rules={[{ required: true, message: 'Please write something!' }]}
+          />
 
-          <Form.Item name='content'  rules={[{required: true, message: "Please write something!"}]}>
-            <Input.TextArea placeholder="Write a post..."/>
-          </Form.Item>
-
-          <Form.Item>
-            <Button type="primary" htmlType="submit" block>Post</Button>
-          </Form.Item>
+          <CostumButton htmlType="submit">
+            Post
+          </CostumButton>
         </Form>
       </div>
-
-      <Spin spinning={status === 'loading'}>
-      <ul>
-         {posts.length > 0 ? (
-            posts.map((post) =>
-               <li key={post.id}>
-                  <Link to={`/posts/${post.id}`}>{post.content}</Link>
-                  <Button onClick={() => handleDelete(post.id)}>Delete</Button>
-                </li>
-          )
-          ) : (
-            <p>No posts available.</p>
-          )}
-      </ul>
-      </Spin>
       
-
-    </div>
+          <PostList posts={posts} handleDelete={handleDelete} />
+      </Spin>
   )
 }
