@@ -15,8 +15,7 @@ use Laravel\Passport\Http\Controllers\AccessTokenController;
 
 class AuthController extends AccessTokenController
 {
-    public function refreshToken(RefreshTokenRequest $request): JsonResponse
-    {
+    public function refreshToken(RefreshTokenRequest $request) {
         try {
             $response = Http::asForm()->post(env('APP_URL') . '/oauth/token', [
                 'grant_type' => 'refresh_token',
@@ -58,13 +57,6 @@ class AuthController extends AccessTokenController
 
     public function login(LoginRequest $request) {
         try {
-            $credentials = $request->only('email', 'password');
-
-            $checkUser = Auth::attempt($credentials);
-
-            if ($checkUser) {
-                $user = Auth::user();
-
                 $response = Http::post(env('APP_URL') . '/oauth/token', [
                     'grant_type' => 'password',
                     'client_id' => env('PASSPORT_PASSWORD_CLIENT_ID'),
@@ -73,13 +65,16 @@ class AuthController extends AccessTokenController
                     'password' => $request->password,
                     'scope' => '',
                 ]);
-    
-                $token = $response->json();
 
-                return response()->json(['message' => 'User logged in succesfully', 'user' => $user, 'token' => $token], 201);
-            } else {
+                if($response->ok()) {
+                    $token = $response->json();
+                    return response()->json([
+                         'message' => 'User logged in successfully',
+                         'token' => $token
+                    ], 201);
+                }
                 return response()->json(['message' => 'User is not authorized'], 401);
-            }
+        
         } catch (\Throwable $th) {
             return response()->json(['message' => 'There was an error while trying to log user in'], 500);
         }
