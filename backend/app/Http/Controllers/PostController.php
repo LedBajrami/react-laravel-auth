@@ -10,38 +10,54 @@ use Illuminate\Support\Facades\Auth;
 class PostController extends Controller
 {
     public function create(PostRequest $request) {
-        $post = Post::create([
-            'user_id' => Auth::id(),
-            'content' => $request->content,
-        ]);
-
-        return response()->json(['message' => 'Post created successfully', 'post' => $post], 201);
+        try {
+            $post = Post::create([
+                'user_id' => Auth::id(),
+                'content' => $request->content,
+            ]);
+    
+            return response()->json(['message' => 'Post created successfully', 'post' => $post], 201);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'Could not create post, please try again later'], 500);
+        }
     }
 
     public function posts() {
-        $posts = Post::where('user_id', Auth::id())->latest()->get();
-        return response()->json(['posts' => $posts], 200);
+        try {
+            $posts = Post::where('user_id', Auth::id())->latest()->get();
+            return response()->json(['posts' => $posts], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'Could not get posts data, please try again later'], 500);
+        }
     }
 
     public function delete($id) {
-        $post = Post::find($id);
+        try {
+            $post = Post::find($id);
 
-        if ($post && $post->user_id == Auth::id()) {
-            $post->delete();
-            return response()->json(['message' => 'Post deleted successfully'], 200);
-        } else {
-            return response()->json(['message' => 'Post not found or unauthorized'], 404);
+            if ($post && $post->user_id == Auth::id()) {
+                $post->delete();
+                return response()->json(['message' => 'Post deleted successfully'], 200);
+            } else {
+                return response()->json(['message' => 'Post not found or unauthorized'], 404);
+            }
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'Could not delete post, please try again later'], 500);
         }
     }
 
 
     public function show($id) {
-        $post = Post::with('comments.user')->find($id);
+        try {
+            $post = Post::with('comments.user')->find($id);
 
-        if (!$post) {
-            return response()->json(['message' => 'Post not found'], 404);
+            if (!$post) {
+                return response()->json(['message' => 'Post not found'], 404);
+            }
+
+            return response()->json(['post' => $post], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'Could not retrieve post with comments data please try again later'], 500);
         }
-
-        return response()->json(['post' => $post], 200);
     }
 }
