@@ -15,11 +15,17 @@ use Laravel\Passport\Http\Controllers\AccessTokenController;
 
 class AuthController extends AccessTokenController
 {
-    public function refreshToken(RefreshTokenRequest $request) {
+    public function refreshToken() {
         try {
+            $refreshToken = request()->cookie('refresh_token');
+
+            if (!$refreshToken) {
+                return response()->json(['message' => 'No refresh token found'], 401);
+            }
+
             $response = Http::asForm()->post(env('APP_URL') . '/oauth/token', [
                 'grant_type' => 'refresh_token',
-                'refresh_token' => $request->refresh_token,
+                'refresh_token' => $refreshToken,
                 'client_id' => env('PASSPORT_PASSWORD_CLIENT_ID'),
                 'client_secret' => env('PASSPORT_PASSWORD_SECRET'),
                 'scope' => '',
@@ -29,12 +35,27 @@ class AuthController extends AccessTokenController
                 return response()->json(['message' => 'Invalid refresh token'], 401);
             }
 
-            return response()->json([
-                'success' => true,
-                'statusCode' => 200,
-                'message' => 'Refreshed token.',
-                'data' => $response->json(),
-            ], 200);
+            if ($response->ok()) {
+                $token = $response->json();
+
+                return response()->json([
+                    'success' => true,
+                    'statusCode' => 200,
+                    'message' => 'Refreshed token.',
+                    'access_token' => $token['access_token'],
+                ], 200)
+                ->cookie(
+                    'refresh_token',
+                    $token['refresh_token'],
+                    60 * 24 * 30,
+                    '/',
+                    '127.0.0.1',
+                    false,
+                    true,
+                    false,
+                    'Lax'
+                );
+            }
 
         } catch (\Throwable $th) {
             return response()->json(['message' => 'Could not reissue new refresh token'], 500);
@@ -70,8 +91,19 @@ class AuthController extends AccessTokenController
                     $token = $response->json();
                     return response()->json([
                          'message' => 'User logged in successfully',
-                         'token' => $token
-                    ], 201);
+                         'access_token' => $token['access_token']
+                    ], 201)
+                    ->cookie(
+                        'refresh_token',
+                        $token['refresh_token'],
+                        60 * 24 * 30,
+                        '/',
+                        '127.0.0.1',
+                        false,
+                        true,
+                        false,
+                        'Lax'
+                    );
                 }
                 return response()->json(['message' => 'User is not authorized'], 401);
         
@@ -90,7 +122,8 @@ class AuthController extends AccessTokenController
             ->where('access_token_id', $userAccessToken->id)
             ->update(['revoked' => true]);
 
-            return response()->json(['message' => 'User logged out succesfully'], 200);
+            return response()->json(['message' => 'User logged out succesfully'], 200)
+            ->cookie('refresh_token', '', -1);
 
         } catch (\Throwable $th) {
             return response()->json(['message' => 'There was an error while uploading logging user out'], 500);

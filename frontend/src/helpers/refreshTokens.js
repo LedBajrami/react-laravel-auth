@@ -1,33 +1,34 @@
+import { logoutUser } from "../services/redux/slices/auth/authThunks";
+
 export const refreshTokens = async () => {
-    const refreshToken = localStorage.getItem("refresh_token")
-  
     try {
       const response = await fetch(`${process.env.REACT_APP_BASE_URL}/api/refresh`, {
         headers: {
           'Content-Type': 'application/json', Accept: 'application/json'
         },
         method: "POST",
-        body: JSON.stringify({refresh_token: refreshToken})
+        credentials: "include"
       })
-    
       
       if (!response.ok) {
         throw new Error("Failed to refresh tokens");
     } 
     
-      
-      const tokens = await response.json()
+      const token = await response.json()
      
-      localStorage.setItem('access_token', tokens.data.access_token)
-      localStorage.setItem('refresh_token', tokens.data.refresh_token)
+      localStorage.setItem('access_token', token.access_token)
     } catch (error) {
-      console.error('Error:', error.message);
+      console.error(' Error:', error.message);
       throw error
     }
 }
   
-export const manualLogout = () => {
+export const manualLogout = async () => {
+  try {
+    await logoutUser()
+  } catch (error) {
+    console.error('Logout API failed:', error.message);
+  }
     localStorage.removeItem('access_token')
-    localStorage.removeItem('refresh_token')
     window.location.href = '/login'
 }

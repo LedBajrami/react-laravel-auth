@@ -8,16 +8,16 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::middleware(['throttle:authActions'])->group(function () {
-  Route::post('/register', [UserController::class, 'register']);
-  Route::post('/login', [UserController::class, 'login']);
-  Route::post('/refresh', [AuthController::class, 'refreshToken'])->middleware('throttle:authActions');
+  Route::post('/register', [AuthController::class, 'register']);
+  Route::post('/login', [AuthController::class, 'login']);
+  Route::post('/refresh', [AuthController::class, 'refreshToken']);
 });
 
 Route::middleware(['auth:api'])->group(function() {
 
   Route::get('/user', [UserController::class, 'user']);
   Route::post('/user/upload', [UserController::class, 'uploadPhoto'])->middleware('throttle:createActions');
-  Route::get('/logout', [UserController::class, 'logout'])->middleware('throttle:authActions');
+  Route::post('/logout', [AuthController::class, 'logout'])->middleware('throttle:authActions');
 
 
   Route::post('/post', [PostController::class, 'create'])->middleware('throttle:createActions');

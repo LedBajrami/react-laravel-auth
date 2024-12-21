@@ -23,11 +23,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         RateLimiter::for('authActions', function($request) {
-            return Limit::perMinute(15)->by($request->ip());
+            return Limit::perMinute(5)->by($request->ip());
         });
 
         RateLimiter::for('createActions', function($request) {
-            return Limit::perMinute(5)->by($request->user()->id);
+            return Limit::perMinute(10)->by($request->user()->id);
         });
 
         RateLimiter::for('deleteActions', function($request) {

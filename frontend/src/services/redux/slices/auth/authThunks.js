@@ -32,7 +32,7 @@ export const registerUser = createAsyncThunk('/auth/registerUser',
 export const logoutUser = createAsyncThunk('/auth/logoutUser',
   async(_, {rejectWithValue}) => {
     try {
-      const response = await apiClient('/api/logout', {method: "GET"})
+      const response = await apiClient('/api/logout', {method: "POST"})
       return response
     } catch (error) {
       return rejectWithValue(error.message || "There was an error while logging out")      

@@ -12,7 +12,8 @@ export const apiClient = async(url, options ={}) => {
   try {
     let response = await fetch(`${process.env.REACT_APP_BASE_URL}${url}`, {
       headers,
-      ...options
+      ...options,
+      credentials: 'include'
     })
 
         const loginUrl = response.url.includes('/login')
@@ -25,7 +26,8 @@ export const apiClient = async(url, options ={}) => {
 
                response = await fetch(`${process.env.REACT_APP_BASE_URL}${url}`, {
                 headers,
-                ...options
+                ...options,
+                credentials: 'include'
               })
             } catch {
               manualLogout()
